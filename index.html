@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8"/>
+    <title>STEAMPUNK</title>
+    <style type="text/css">
+      html{font-family: serif;}
+      code a{text-decoration: none;}
+      h1{display: inline-block; margin-bottom: 0;}
+      code{font-family: monospace;}
+      h4{display: inline-block; margin: 0; padding: 0;}
+      #symbol-index ul{list-style: none;}
+      .package li{margin-bottom: 20px;}
+      .package pre{margin: 0 0 0 10px; white-space: pre-wrap;}
+      .package .nicknames{font-weight: normal;}
+      table{margin: 20px;}
+      td{padding-bottom: 10px;}
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>steampunk</h1>
+      <span>0.1.0</span>
+      <p>A wrapper over postmodern.</p>
+    </header>
+    <div id="content">
+      <article>
+        <c:documentate>
+          <span><h1>Steampunk</h1>
+
+<p>This wrapper implements more high-level interface to database with
+possiblity to change backend in future releases as it maps all of the
+postmodern's functionality to its own abstractions.</p>
+
+<p>The following features are available:</p>
+
+<ul>
+<li>More advanced database connection management</li>
+<li>Low-level mappings to database functions (<code>STEAMPUNK.DATABASE</code>)</li>
+<li>Schema management and ORM (<code>STEAMPUNK.SCHEMA</code>)</li>
+<li>Various operations on above mentioned database objects (<code>STEAMPUNK.OPERATIONS</code>)</li>
+</ul>
+
+<h2>Usage</h2>
+
+<p>You can either use low-level mappings if you want compatilibily level
+in case Postmodern ever becomes deprecated or you can use my
+high-level interface.</p>
+
+<p>For documentation, you can read docstrings or see API reference: <insert link="" here=""/></p>
+
+<p>Consider, if you have the energy, the following example. Say, we have two database entities: a user and a password. I don't know why would anyone use different tables to store them but just once let's denormalize them.</p>
+
+<p>We could define a user using the following form:</p>
+
+<pre><code><span class="code"><span class="paren1">(<span class="code"><i><span class="symbol">steampunk.schema:defentity</span></i> user <span class="paren2">(<span class="code"/>)</span>
+  <span class="paren2">(<span class="code"><span class="paren3">(<span class="code">id <span class="keyword">:db-type</span> serial</span>)</span>
+   <span class="paren3">(<span class="code">name <span class="keyword">:initarg</span> <span class="keyword">:name</span>
+         <span class="keyword">:db-type</span> string</span>)</span></span>)</span>
+  <span class="paren2">(<span class="code"/>)</span>
+  <span class="paren2">(<span class="code"><span class="keyword">:table-name</span> users</span>)</span></span>)</span></span></code></pre>
+
+<p>Then we could define password using the following form:</p>
+
+<pre><code><span class="code"><span class="paren1">(<span class="code"><i><span class="symbol">steampunk.schema:defentity</span></i> password <span class="paren2">(<span class="code"/>)</span>
+  <span class="paren2">(<span class="code"><span class="paren3">(<span class="code">user-id <span class="keyword">:db-type</span> integer</span>)</span>
+   <span class="paren3">(<span class="code">password <span class="keyword">:initarg</span> <span class="keyword">:password</span>
+             <span class="keyword">:db-type</span> string</span>)</span></span>)</span>
+  <span class="paren2">(<span class="code">user-id -&gt; <span class="paren3">(<span class="code">user id</span>)</span></span>)</span>
+  <span class="paren2">(<span class="code"><span class="keyword">:table-name</span> password</span>)</span></span>)</span></span></code></pre>
+
+<p>Now we need to define a database connection using the following form:</p>
+
+<pre><code><span class="code"><span class="paren1">(<span class="code"><i><span class="symbol">steampunk.connection:define-database</span></i> <span class="keyword">:my-database</span>
+  <span class="keyword">:name</span> <span class="string">&quot;my-database&quot;</span>
+  <span class="keyword">:host</span> <span class="string">&quot;localhost&quot;</span>
+  <span class="keyword">:user</span> <span class="string">&quot;postgres&quot;</span>
+  <span class="keyword">:password</span> <span class="string">&quot;my-password&quot;</span></span>)</span></span></code></pre>
+
+<p>And then we establish connection:</p>
+
+<pre><code><span class="code"><span class="paren1">(<span class="code">steamunk.connection:connect <span class="paren2">(<span class="code">steampunk.connection:database <span class="keyword">:my-database</span></span>)</span></span>)</span></span></code></pre>
+
+<p>After it's done, let's initialize our database with necessary tables:</p>
+
+<pre><code><span class="code"><span class="paren1">(<span class="code"><i><span class="symbol">steampunk.connection:with-connection</span></i> <span class="paren2">(<span class="code"><span class="keyword">:my-database</span></span>)</span>
+  <span class="paren2">(<span class="code">steampunk.schema:init-database</span>)</span></span>)</span></span></code></pre>
+
+<h2>API</h2>
+
+<p>The following packages are available for usage:</p>
+
+<ul>
+<li><code>STEAMPUNK</code> (<code>STEAM</code>) — main package aggregating all the other packages.</li>
+<li><code>STEAMPUNK.CONNECTION</code> (<code>STEAM.CONNECTION</code>, <code>STEAM.CONN</code>) — database connection management.</li>
+<li><code>STEAMPUNK.DATABASE</code> (<code>STEAMPUNK.DB</code>, <code>STEAM.DATABASE</code>, <code>STEAM.DB</code>) — direct mappings to most raw postmodern functions.</li>
+<li><code>STEAMPUNK.SCHEMA</code> (<code>STEAM.SCHEMA</code>) — schema management and ORM.</li>
+<li><code>STEAMPUNK.OPERATION</code> (<code>STEAMPUNK.OPS</code>, <code>STEAM.OPERATIONS</code>, <code>STEAM.OPS</code>) — operations over ORM objects.</li>
+</ul>
+
+<h2>Installation</h2>
+
+<p>(It's not yet in Quicklisp but I plan on submitting pull request)</p>
+
+<p>If you have Quicklisp installed, then use:</p>
+
+<pre><code><span class="code"><span class="paren1">(<span class="code">ql:quickload <span class="keyword">:steampunk</span></span>)</span></span></code></pre>
+
+<p>Otherwise, install Quicklisp and proceed to the previous paragraph.</p>
+
+<h2>Authors</h2>
+
+<ul>
+<li>Mark Fedurin (me@hitecnologys.org)</li>
+</ul>
+</span>
+        </c:documentate>
+      </article>
+      <article>
+        
+          <h2>Copyright</h2>
+          <span>steampunk</span> is licensed under the <span><a href="https://tldrlegal.com/search?q=GPLv3">GPLv3</a></span> license.
+          
+            © <span>Mark Fedurin &lt;me@hitecnologys.org&gt;</span>
+            .
+          
+          This library can be obtained on <a href="https://github.com/HiTECNOLOGYs/steampunk">https://github.com/HiTECNOLOGYs/steampunk</a>.
+        
+      </article>
+      
+        <article id="symbol-index">
+          <h2>Package Index</h2>
+          <ul><li class="package">
+              <h3>
+                <a name="STEAMPUNK" href="#STEAMPUNK">STEAMPUNK</a>
+                <span class="nicknames">(STEAM)</span>
+              </h3>
+              <ul/>
+            </li><li class="package">
+              <h3>
+                <a name="STEAMPUNK.CONNECTION" href="#STEAMPUNK.CONNECTION">STEAMPUNK.CONNECTION</a>
+                <span class="nicknames">(STEAM.CONN STEAM.CONNECTION)</span>
+              </h3>
+              <ul><li>
+                  <a name="STEAMPUNK.CONNECTION:DATABASE"/>
+                  <article>
+                    <header class="class">
+                      <span class="type">class</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.CONNECTION:DATABASE" class="name">DATABASE</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">()</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Stores information about database.
+Used to establish database connection so it also stores connection object in CONNECTION slot which
+is set by CONNECT call and should not be touched by the user.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.CONNECTION:DATABASE"/>
+                  <article>
+                    <header class="accessor">
+                      <span class="type">accessor</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.CONNECTION:DATABASE" class="name">DATABASE</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(ID)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Returns database information stores under given ID.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.CONNECTION:CONNECT"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.CONNECTION:CONNECT" class="name">CONNECT</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DATABASE)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Establishes connection to DATABASE and returns connection object.
+Checks if connection has already been established and does nothing if so, otherwise establishes
+connection and sets CONNECTION slot of DATABASE to DATABASE-CONNECTION instance.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.CONNECTION:CONNECT-TOPLEVEL"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.CONNECTION:CONNECT-TOPLEVEL" class="name">CONNECT-TOPLEVEL</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DATABASE)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Establishes toplevel connection to DATABASE.
+Toplevel connections are usually not a good idea unless you're doing testing.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.CONNECTION:CONNECTED-P"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.CONNECTION:CONNECTED-P" class="name">CONNECTED-P</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DATABASE)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Checks if database has already been connected to and returns T if so. Otherwise, returns NIL.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.CONNECTION:DEFINE-DATABASE"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.CONNECTION:DEFINE-DATABASE" class="name">DEFINE-DATABASE</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(ID &amp;KEY NAME HOST PORT USER PASSWORD USE-SSL?)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Defines new database under given ID.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.CONNECTION:DISCONNECT"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.CONNECTION:DISCONNECT" class="name">DISCONNECT</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DATABASE)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Drops DATABASE connection.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.CONNECTION:DISCONNECT-TOPLEVEL"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.CONNECTION:DISCONNECT-TOPLEVEL" class="name">DISCONNECT-TOPLEVEL</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">()</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Disconnects existing toplevel connection.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.CONNECTION:RECONNECT"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.CONNECTION:RECONNECT" class="name">RECONNECT</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DATABASE)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Reconnects existing DATABASE connection.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.CONNECTION:UNDEFINE-DATABASE"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.CONNECTION:UNDEFINE-DATABASE" class="name">UNDEFINE-DATABASE</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(ID)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Removes definition of database under given ID.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.CONNECTION:WITH-CONNECTION"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.CONNECTION:WITH-CONNECTION" class="name">WITH-CONNECTION</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DATABASE &amp;BODY BODY)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Executes BODY with database CONNECTION.
+
+If DATABASE is a symbol, wraps gets it from list of defined databases.
+Otherwise, passes it unmodified to lower level constructs.</pre>
+                  </article>
+                </li></ul>
+            </li><li class="package">
+              <h3>
+                <a name="STEAMPUNK.DATABASE" href="#STEAMPUNK.DATABASE">STEAMPUNK.DATABASE</a>
+                <span class="nicknames">(STEAM.DB STEAM.DATABASE STEAMPUNK.DB)</span>
+              </h3>
+              <ul><li>
+                  <a name="STEAMPUNK.DATABASE:ABORT-HOOKS"/>
+                  <article>
+                    <header class="accessor">
+                      <span class="type">accessor</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:ABORT-HOOKS" class="name">ABORT-HOOKS</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(TRANSACTION-OR-SAVEPOINT)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Returns a list of hooks that are executed if transaction or savepoint is aborted.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:COMMIT-HOOKS"/>
+                  <article>
+                    <header class="accessor">
+                      <span class="type">accessor</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:COMMIT-HOOKS" class="name">COMMIT-HOOKS</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(TRANSACTION-OR-SAVEPOINT)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Returns a list of hooks that are executed on transaction or savepoint commit.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:SEARCH-PATH"/>
+                  <article>
+                    <header class="accessor">
+                      <span class="type">accessor</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:SEARCH-PATH" class="name">SEARCH-PATH</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">()</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Returns current search path.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:COMMIT-TRANSACTION"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:COMMIT-TRANSACTION" class="name">COMMIT-TRANSACTION</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(TRANSACTION)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Commits given database transaction.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:CREATE-SCHEMA"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:CREATE-SCHEMA" class="name">CREATE-SCHEMA</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(SCHEMA)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Creates new schema.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:DROP-SCHEMA"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:DROP-SCHEMA" class="name">DROP-SCHEMA</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(SCHEMA)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Drops existing schema.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:LIST-SCHEMATA"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:LIST-SCHEMATA" class="name">LIST-SCHEMATA</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">()</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Lists schemata in database.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:LIST-SEQUENCES"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:LIST-SEQUENCES" class="name">LIST-SEQUENCES</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(&amp;OPTIONAL AS-STRINGS?)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Lists sequences in database. If AS-STRINGS? is true, then it returns names as strings instead of
+keywords.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:LIST-TABLES"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:LIST-TABLES" class="name">LIST-TABLES</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(&amp;OPTIONAL AS-STRINGS?)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Lists tables in database. If AS-STRINGS? is true, then it returns names as strings instead of
+keywords.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:LIST-VIEWS"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:LIST-VIEWS" class="name">LIST-VIEWS</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(&amp;OPTIONAL STRINGS-P)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Lists views in database. If AS-STRINGS? is true, then it returns names as strings instead of
+keywords.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:RELEASE-SAVEPOINT"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:RELEASE-SAVEPOINT" class="name">RELEASE-SAVEPOINT</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(SAVEPOINT)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Releases given savepoint.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:ROLLBACK-SAVEPOINT"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:ROLLBACK-SAVEPOINT" class="name">ROLLBACK-SAVEPOINT</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(SAVEPOINT)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Rolls back savepoint.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:ROLLBACK-TRANSACTION"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:ROLLBACK-TRANSACTION" class="name">ROLLBACK-TRANSACTION</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(TRANSACTION)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Roll back given database transaction.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:SCHEMATA-EXISTS-P"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:SCHEMATA-EXISTS-P" class="name">SCHEMATA-EXISTS-P</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Checks if table under given NAME exists in database.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:SEQUENCE-EXISTS-P"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:SEQUENCE-EXISTS-P" class="name">SEQUENCE-EXISTS-P</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Checks if sequence under given NAME exists in database.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:SEQUENCE-NEXT"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:SEQUENCE-NEXT" class="name">SEQUENCE-NEXT</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(SEQUENCE)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Gets next value from SEQUENCE.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:TABLE-DESCRIPTION"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:TABLE-DESCRIPTION" class="name">TABLE-DESCRIPTION</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME &amp;OPTIONAL SCHEMA-NAME)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Returns a list of columns in table with given NAME.
+Every field is a list of the following structure: (NAME TYPE CAN-BE-NULL?)</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:TABLE-EXISTS-P"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:TABLE-EXISTS-P" class="name">TABLE-EXISTS-P</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Checks if table under given NAME exists in database.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:VIEW-EXISTS-P"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:VIEW-EXISTS-P" class="name">VIEW-EXISTS-P</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Checks if view under given NAME exists in database.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:DEFPREPARED"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:DEFPREPARED" class="name">DEFPREPARED</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME QUERY &amp;OPTIONAL (FORMAT :ROWS))</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">DEFUN-style variant of PREPARE.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:DEFPREPARED-WITH-NAMES"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:DEFPREPARED-WITH-NAMES" class="name">DEFPREPARED-WITH-NAMES</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME (&amp;REST ARGS) (QUERY &amp;REST QUERY-ARGS) &amp;OPTIONAL (FORMAT :ROWS))</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">DEFPREPARED variant that allows to specify names of arguments.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:DOQUERY"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:DOQUERY" class="name">DOQUERY</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(QUERY (&amp;REST NAMES) &amp;BODY BODY)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Executes QUERY and iterates over results.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:ENSURE-TRANSACTION"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:ENSURE-TRANSACTION" class="name">ENSURE-TRANSACTION</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(&amp;BODY BODY)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Checks if BODY is already within transaction. Executes it in one otherwise.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:EXECUTE"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:EXECUTE" class="name">EXECUTE</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(QUERY &amp;REST ARGS)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Execute given QUERY but suppress result.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:PREPARE"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:PREPARE" class="name">PREPARE</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(QUERY &amp;OPTIONAL (FORMAT :ROWS))</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Creates a function that can be used as an interface to QUERY.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:QUERY"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:QUERY" class="name">QUERY</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(QUERY &amp;REST ARGS/FORMAT)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Execute given QUERY.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:WITH-SAVEPOINT"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:WITH-SAVEPOINT" class="name">WITH-SAVEPOINT</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME &amp;BODY BODY)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Used within a transaction to define a savepoint.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:WITH-SCHEMA"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:WITH-SCHEMA" class="name">WITH-SCHEMA</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">((NAMESPACE &amp;KEY (STRICT T) (IF-DOES-NOT-EXIST :CREATE) DROP-AFTER) &amp;BODY BODY)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Executes a BODY within NAMESPACE.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.DATABASE:WITH-TRANSACTION"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.DATABASE:WITH-TRANSACTION" class="name">WITH-TRANSACTION</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">((&amp;OPTIONAL NAME) &amp;BODY BODY)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Wraps in database transaction.</pre>
+                  </article>
+                </li></ul>
+            </li><li class="package">
+              <h3>
+                <a name="STEAMPUNK.SCHEMA" href="#STEAMPUNK.SCHEMA">STEAMPUNK.SCHEMA</a>
+                <span class="nicknames">(STEAM.SCHEMA)</span>
+              </h3>
+              <ul><li>
+                  <a name="STEAMPUNK.SCHEMA:DB-CLASS"/>
+                  <article>
+                    <header class="class">
+                      <span class="type">class</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.SCHEMA:DB-CLASS" class="name">DB-CLASS</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">()</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Metaclass for ORM.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.SCHEMA:DB-OBJECT"/>
+                  <article>
+                    <header class="class">
+                      <span class="type">class</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.SCHEMA:DB-OBJECT" class="name">DB-OBJECT</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">()</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Base class for object-relational mapping.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.SCHEMA:DEINIT-DATABASE"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.SCHEMA:DEINIT-DATABASE" class="name">DEINIT-DATABASE</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(&amp;OPTIONAL YOU-SURE? YOU-ABSOLUTELY-SURE?)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">WARNING: Destroys all the data in database that was created by application.
+Requires user to supply T as first argument and :YES as second in order to proceed.
+
+This is usually not needed and should only be used in debugging from REPL hence the
+arguments.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.SCHEMA:INIT-DATABASE"/>
+                  <article>
+                    <header class="function">
+                      <span class="type">function</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.SCHEMA:INIT-DATABASE" class="name">INIT-DATABASE</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">()</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Initializes database for application needs.
+
+It does the following:
+* Creates defined tables
+* Creates defined sequences</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.SCHEMA:DEFDAO"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.SCHEMA:DEFDAO" class="name">DEFDAO</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME DIRECT-SUPERCLASSES DIRECT-SLOTS &amp;REST OPTIONS)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Defines new DAO.
+
+This is one-to-one mapping to postmodern's DAO except that it sets metaclass to DB-CLASS for you and
+inexplicitly inherits DB-OBJECT.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.SCHEMA:DEFENTITY"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.SCHEMA:DEFENTITY" class="name">DEFENTITY</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME (&amp;REST PARENTS) (&amp;REST FIELDS) (&amp;REST RELATIONS) &amp;REST OPTIONS)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Defines new database entity. Entity is a class that is used to access database
+  records. Basically, it's DAO with additional features.
+
+PARENTS is a list of classes or other entities that this entity inherits.
+
+FIELDS is a list of slots. Each slot can have the following args:
+  :db-type       | type of mapped database column
+  :db-initform   | initialization form of mapped database column
+  :initform      | initialization form of DAO instance
+  :initarg       | initarg for MAKE-INSTANCE
+  :documentation | docstring
+  :type          | type of slot value
+
+RELATIONS is a list of foreign tables mapped to this entity. Each list element has the following
+format:
+  (local-slot -&gt; (foreign-entity foreign-slot))
+
+OPTIONS is a associative list of options to entity itself. Currently the following options are
+available:
+  :table-name    | name of database table associated with entity</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.SCHEMA:DEFRELATION"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.SCHEMA:DEFRELATION" class="name">DEFRELATION</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME &amp;BODY RELATIONS)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Defines new relation between two entities.
+
+RELATIONS is a list of foreign mappings. Each list element has the following format:
+  (local-slot -&gt; (foreign-entity foreign-slot))</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.SCHEMA:DEFSEQUENCE"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.SCHEMA:DEFSEQUENCE" class="name">DEFSEQUENCE</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(NAME &amp;KEY START MIN-VALUE MAX-VALUE INCREMENT CYCLE? CACHE)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Defines new database sequence with given NAME and various initargs for further creation by
+INIT-DATABASE. If sequence with the same name already exists, it does nothing and returns NIL.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.SCHEMA:DEFTABLE"/>
+                  <article>
+                    <header class="macro">
+                      <span class="type">macro</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.SCHEMA:DEFTABLE" class="name">DEFTABLE</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(TABLE-NAME &amp;BODY DEFINITION)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Defines new table named TABLE-NAME.
+If table with the same name has already been defined, does nothing and returns NIL.
+
+Definition is a list of forms of the following format:
+(:key value-1 value-2 ... value-n)
+
+Key can be one of the following:
+* :DB-OBJECT-MAPPING
+* :FOREIGN-KEY
+* :UNIQUE
+* :UNIQUE-INDEX-ON
+* :INDEX-ON
+
+:DB-OBJECT-MAPPING defines DAO which slots are to be table columns. It has the following format:
+(:db-object-mapping dao-name)
+
+:FOREIGN-KEY defines mappings to foreign tables. It has the following format:
+(:foreign-key local-column -&gt; (foreign-table foreign-column))
+
+:UNIQUE defines unique columns. It has the following format:
+(:unique column-name)
+
+:UNIQUE-INDEX-ON defines unique indexes. It has the following format:
+(:unique-index-on column-name)
+
+:INDEX-ON defines indexes. It has the following format:
+(:index-on column-name)</pre>
+                  </article>
+                </li></ul>
+            </li><li class="package">
+              <h3>
+                <a name="STEAMPUNK.OPERATIONS" href="#STEAMPUNK.OPERATIONS">STEAMPUNK.OPERATIONS</a>
+                <span class="nicknames">(STEAM.OPS STEAM.OPERATIONS STEAMPUNK.OPS)</span>
+              </h3>
+              <ul><li>
+                  <a name="STEAMPUNK.OPERATIONS:CREATE-DAO"/>
+                  <article>
+                    <header class="generic">
+                      <span class="type">generic</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.OPERATIONS:CREATE-DAO" class="name">CREATE-DAO</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DAO-CLASS &amp;REST INITARGS)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Creates DAO of class DAO-CLASS with given INITARGS.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.OPERATIONS:DAO-EXISTS-P"/>
+                  <article>
+                    <header class="generic">
+                      <span class="type">generic</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.OPERATIONS:DAO-EXISTS-P" class="name">DAO-EXISTS-P</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DAO-CLASS KEY VALUE)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Checks if DAO of class DAO-CLASS with KEY = VALUE exists.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.OPERATIONS:DELETE-DAO"/>
+                  <article>
+                    <header class="generic">
+                      <span class="type">generic</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.OPERATIONS:DELETE-DAO" class="name">DELETE-DAO</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DAO)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Deletes given DAO from database.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.OPERATIONS:LINK-DAO"/>
+                  <article>
+                    <header class="generic">
+                      <span class="type">generic</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.OPERATIONS:LINK-DAO" class="name">LINK-DAO</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DAO-1 SLOT-1 DAO-2 SLOT-2)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Sets SLOT-1 of DAO-1 to value of SLOT-2 of DAO-2.
+It also commits updated DAO to database in the :AFTER method.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.OPERATIONS:QUERY-DAO"/>
+                  <article>
+                    <header class="generic">
+                      <span class="type">generic</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.OPERATIONS:QUERY-DAO" class="name">QUERY-DAO</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DAO-CLASS QUERY)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Queries DAO of class DAO-CLASS from database with given query.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.OPERATIONS:SELECT-DAO"/>
+                  <article>
+                    <header class="generic">
+                      <span class="type">generic</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.OPERATIONS:SELECT-DAO" class="name">SELECT-DAO</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DAO-CLASS PREDICATE &amp;REST ORDERING)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Selects DAO of class DAO-CLASS from database with given predicate.
+Also sorts the data according to ORDERING clauses.</pre>
+                  </article>
+                </li><li>
+                  <a name="STEAMPUNK.OPERATIONS:UPDATE-DAO"/>
+                  <article>
+                    <header class="generic">
+                      <span class="type">generic</span>
+                      <code>
+                        <h4><a href="#STEAMPUNK.OPERATIONS:UPDATE-DAO" class="name">UPDATE-DAO</a></h4>
+                        <span class="qualifiers"></span>
+                        <span class="arguments">(DAO UPDATES)</span>
+                      </code>
+                    </header>
+                    <pre class="docstring">Updates given DAO object fields.
+UPDATES is a list of CONSes: (slot . new-value).
+It also commits updated DAO to database in the :AFTER method.</pre>
+                  </article>
+                </li></ul>
+            </li></ul>
+        </article>
+      
+    </div>
+  </body>
+</html>
